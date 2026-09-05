@@ -1,0 +1,23 @@
+services:
+  xiaozhi-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        XIAOZHI_SERVER_REF: ${XIAOZHI_SERVER_REF:-main}
+    container_name: esp32-voice-claude
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8000:8000" # WebSocket - hier verbindet sich die Firmware
+      - "8003:8003" # HTTP (OTA / Vision-Endpunkt)
+    volumes:
+      - xiaozhi-data:/opt/xiaozhi-esp32-server/data
+      - xiaozhi-models:/opt/xiaozhi-esp32-server/models
+      - xiaozhi-tmp:/opt/xiaozhi-esp32-server/tmp
+
+volumes:
+  xiaozhi-data:
+  xiaozhi-models:
+  xiaozhi-tmp:

@@ -1,0 +1,18 @@
+# Secrets - niemals committen
+server/.env
+
+# Lokale Build-/Laufzeitartefakte
+server/data/
+server/tmp/
+server/models/
+**/__pycache__/
+*.pyc
+
+# ESP-IDF Build-Artefakte (falls Firmware-Checkout lokal daneben liegt)
+build/
+sdkconfig
+sdkconfig.old
+managed_components/
+dependencies.lock
+
+.DS_Store
