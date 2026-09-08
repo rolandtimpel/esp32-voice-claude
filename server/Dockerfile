@@ -19,7 +19,8 @@ RUN git clone --depth 1 --branch ${XIAOZHI_SERVER_REF} \
 
 # Anthropic-Claude-LLM-Provider als zusätzliches Plugin einhängen
 COPY overlay/AnthropicLLM ./core/providers/llm/AnthropicLLM
-RUN pip install --no-cache-dir anthropic
+RUN pip install --no-cache-dir anthropic && \
+    pip install --no-cache-dir --upgrade edge-tts
 
 # Config-Template + Entrypoint, der data/.config.yaml aus Umgebungsvariablen erzeugt
 COPY overlay/config.template.yaml ./data/.config.yaml.template
