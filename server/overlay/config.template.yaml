@@ -23,6 +23,7 @@ ASR:
     base_url: https://api.groq.com/openai/v1/audio/transcriptions
     model_name: whisper-large-v3-turbo
     output_dir: tmp/
+    language: de
 
 LLM:
   AnthropicLLM:

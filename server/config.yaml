@@ -1,5 +1,5 @@
 name: ESP32 Voice Claude
-version: "1.0.1"
+version: "1.0.2"
 slug: esp32_voice_claude
 description: >-
   Sprachassistent-Server für den ESP32-S3-Voice-Ball: verbindet Claude
