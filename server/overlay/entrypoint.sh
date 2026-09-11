@@ -4,6 +4,8 @@ set -eu
 TEMPLATE=/etc/xiaozhi-config.template.yaml
 TARGET=/opt/xiaozhi-esp32-server/data/.config.yaml
 
+mkdir -p "$(dirname "$TARGET")"
+
 if [ ! -f "$TARGET" ]; then
   : "${ANTHROPIC_API_KEY:?ANTHROPIC_API_KEY ist nicht gesetzt. Trage ihn in server/.env ein (siehe .env.example).}"
   : "${LAN_IP:?LAN_IP ist nicht gesetzt. Trage die LAN-IP dieses Docker-Hosts in server/.env ein (das Board muss den Server im WLAN erreichen).}"
