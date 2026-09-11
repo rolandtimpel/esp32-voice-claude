@@ -19,6 +19,7 @@ class LLMProvider(LLMProviderBase):
     def __init__(self, config):
         self.model_name = config.get("model_name", "claude-sonnet-5")
         self.api_key = config.get("api_key")
+        self.workspace_id = config.get("workspace_id")
         self.max_tokens = int(config.get("max_tokens", 1024))
         self.temperature = float(config.get("temperature", 0.7))
         base_url = config.get("base_url") or config.get("url")
@@ -30,6 +31,8 @@ class LLMProvider(LLMProviderBase):
         client_kwargs = {"api_key": self.api_key}
         if base_url:
             client_kwargs["base_url"] = base_url
+        if self.workspace_id:
+            client_kwargs["default_headers"] = {"anthropic-workspace-id": self.workspace_id}
         self.client = Anthropic(**client_kwargs)
 
     @staticmethod
@@ -56,7 +59,6 @@ class LLMProvider(LLMProviderBase):
         request_params = {
             "model": self.model_name,
             "max_tokens": kwargs.get("max_tokens", self.max_tokens),
-            "temperature": kwargs.get("temperature", self.temperature),
             "messages": messages,
         }
         if system_prompt:

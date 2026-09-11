@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-TEMPLATE=/opt/xiaozhi-esp32-server/data/.config.yaml.template
+TEMPLATE=/etc/xiaozhi-config.template.yaml
 TARGET=/opt/xiaozhi-esp32-server/data/.config.yaml
 
 if [ ! -f "$TARGET" ]; then
@@ -10,11 +10,12 @@ if [ ! -f "$TARGET" ]; then
 
   export ANTHROPIC_API_KEY
   export ANTHROPIC_MODEL="${ANTHROPIC_MODEL:-claude-sonnet-5}"
+  export ANTHROPIC_WORKSPACE_ID="${ANTHROPIC_WORKSPACE_ID:-}"
   export LAN_IP
   export WS_PORT="${WS_PORT:-8000}"
   export HTTP_PORT="${HTTP_PORT:-8003}"
   export TTS_VOICE="${TTS_VOICE:-de-DE-KatjaNeural}"
-  export ASR_LANGUAGE="${ASR_LANGUAGE:-auto}"
+  export GROQ_API_KEY="${GROQ_API_KEY:-}"
 
   envsubst < "$TEMPLATE" > "$TARGET"
   echo "[entrypoint] data/.config.yaml aus Umgebungsvariablen erzeugt."

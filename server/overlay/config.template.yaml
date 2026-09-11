@@ -10,23 +10,25 @@ server:
 
 selected_module:
   VAD: SileroVAD
-  ASR: FunASR
+  ASR: GroqASR
   LLM: AnthropicLLM
   TTS: EdgeTTS
   Memory: nomem
   Intent: nointent
 
 ASR:
-  FunASR:
-    type: fun_local
-    model_dir: models/SenseVoiceSmall
+  GroqASR:
+    type: openai
+    api_key: ${GROQ_API_KEY}
+    base_url: https://api.groq.com/openai/v1/audio/transcriptions
+    model_name: whisper-large-v3-turbo
     output_dir: tmp/
-    language: ${ASR_LANGUAGE}
 
 LLM:
   AnthropicLLM:
     type: AnthropicLLM
     api_key: ${ANTHROPIC_API_KEY}
+    workspace_id: ${ANTHROPIC_WORKSPACE_ID}
     model_name: ${ANTHROPIC_MODEL}
     max_tokens: 1024
     temperature: 0.7
@@ -36,3 +38,7 @@ TTS:
     type: edge
     voice: ${TTS_VOICE}
     output_dir: tmp/
+    language: Deutsch
+
+prompt: |
+  Du bist ein freundlicher, hilfsbereiter Sprachassistent. Antworte immer auf Deutsch, in natürlicher, lockerer Umgangssprache – so wie man normal spricht, nicht steif oder förmlich. Halte deine Antworten kurz und prägnant, da sie laut vorgelesen werden. Keine langen Aufzählungen, keine Markdown-Formatierung, einfach natürlich gesprochene Sätze.
