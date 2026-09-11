@@ -1,0 +1,35 @@
+name: ESP32 Voice Claude
+version: "1.0.0"
+slug: esp32_voice_claude
+description: >-
+  Sprachassistent-Server für den ESP32-S3-Voice-Ball: verbindet Claude
+  (Anthropic), Groq-Spracherkennung (Whisper) und Microsoft EdgeTTS. Läuft
+  unabhängig von deiner Home-Assistant-Konfiguration (Phase 1, ohne
+  Smart-Home-Steuerung).
+url: https://github.com/rolandtimpel/esp32-voice-claude
+arch:
+  - amd64
+  - aarch64
+init: false
+startup: application
+boot: auto
+ports:
+  8000/tcp: 8000
+  8003/tcp: 8003
+ports_description:
+  8000/tcp: WebSocket - hier verbindet sich die ESP32-Firmware
+  8003/tcp: HTTP - OTA-/Vision-Endpunkt
+options:
+  anthropic_api_key: ""
+  anthropic_model: "claude-sonnet-5"
+  anthropic_workspace_id: ""
+  groq_api_key: ""
+  tts_voice: "de-DE-KatjaNeural"
+  lan_ip: ""
+schema:
+  anthropic_api_key: password
+  anthropic_model: str
+  anthropic_workspace_id: str?
+  groq_api_key: password
+  tts_voice: str
+  lan_ip: str

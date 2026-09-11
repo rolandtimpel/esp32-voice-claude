@@ -28,7 +28,10 @@ RUN pip install --no-cache-dir anthropic && \
 # Config-Template + Entrypoint, der data/.config.yaml aus Umgebungsvariablen erzeugt
 COPY overlay/config.template.yaml /etc/xiaozhi-config.template.yaml
 COPY overlay/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+# run.py liest /data/options.json (Home-Assistant-Add-on-Konfiguration) und
+# exportiert sie als dieselben Umgebungsvariablen wie .env - außerhalb eines
+# Add-ons (kein options.json vorhanden) reicht es unverändert durch.
+COPY run.py /run.py
+RUN chmod +x /entrypoint.sh /run.py
 
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["python", "app.py"]
+ENTRYPOINT ["/run.py"]

@@ -23,7 +23,10 @@ Details zur Architektur: [`docs/architektur.md`](docs/architektur.md).
 
 ## Quickstart
 
-### Server (auf einem Rechner/NAS in deinem Heimnetz, mit Docker)
+Zwei Wege, den Server zu betreiben - beide nutzen dasselbe Docker-Image,
+such dir den passenden aus.
+
+### Option A: Docker Compose (Mac/PC/NAS)
 
 ```bash
 cd server
@@ -36,6 +39,27 @@ docker compose logs -f   # prüfen, dass der Server sauber hochkommt
 Details/Hintergrund: [`docs/secrets.md`](docs/secrets.md) (Umgang mit
 API-Keys - niemals ins Repo committen).
 
+**Nachteil:** Muss laufen, solange du den Assistenten nutzen willst - auf
+einem Laptop, der schläft/ausgeht, ist das kein Dauerbetrieb.
+
+### Option B: Als Home-Assistant-Add-on (empfohlen für Dauerbetrieb)
+
+Läuft komplett getrennt von deiner Home-Assistant-Konfiguration (keine
+Entities/Automationen) - nutzt dein ohnehin durchgehend laufendes
+HA-Gerät nur als Hosting-Platz. Funktioniert mit **Home Assistant OS**
+und **Home Assistant Supervised** (nicht mit reinem "Core"/"Container",
+da dort kein Add-on-Store existiert - dort bleibt Option A der Weg).
+
+1. In Home Assistant: **Einstellungen → Add-ons → Add-on Store → ⋮ (oben
+   rechts) → Repositories**
+2. URL eintragen: `https://github.com/rolandtimpel/esp32-voice-claude`
+3. Das Add-on **"ESP32 Voice Claude"** erscheint in der Liste - installieren
+4. Im **Konfiguration**-Tab die Keys/Einstellungen eintragen (Details:
+   [`server/DOCS.md`](server/DOCS.md)), dann starten
+
+Danach OTA-URL in der Firmware auf die LAN-IP deines Home-Assistant-Geräts
+zeigen lassen (statt auf deinen Mac).
+
 ### Firmware (am Board, per USB - musst du selbst machen)
 
 Schritt-für-Schritt-Anleitung: [`docs/firmware.md`](docs/firmware.md).
@@ -44,10 +68,17 @@ Kurzfassung: xiaozhi-esp32 klonen, Board-Profil + Server-Adresse
 
 ## Status / offene Punkte
 
-- [ ] Server lokal getestet (Docker-Build, Verbindung eines Test-Clients)
-- [ ] Firmware geflasht und mit Server verbunden
+- [x] Server lokal getestet (Docker-Build, Verbindung eines Test-Clients)
+- [x] Firmware geflasht und mit Server verbunden
+- [x] Ende-zu-Ende getestet: Wake-Word ("Hi ESP") → Claude antwortet hörbar
+      auf Deutsch
+- [x] STT auf Groq Whisper umgestellt (bessere Erkennungsqualität als
+      lokales FunASR), TTS: EdgeTTS `de-DE-KatjaNeural`
 - [ ] Emotions-Gesicht auf dem Display verifiziert
-- [ ] STT/TTS-Qualität für Deutsch geprüft (Defaults: FunASR lokal,
-      EdgeTTS `de-DE-KatjaNeural` - siehe
-      [`server/overlay/config.template.yaml`](server/overlay/config.template.yaml))
-- [ ] Phase 2 (Home Assistant) - bewusst noch nicht begonnen
+- [ ] Dauerbetrieb: Server auf stabilerem Host als dem Mac (Home-Assistant-
+      Add-on, siehe oben)
+- [ ] Wake-Word-Zuverlässigkeit/Mikrofonempfindlichkeit weiter verbessern
+- [ ] Eigenes Gesicht/Persönlichkeit (Nomi-artig) - zurückgestellt, bis
+      Grundfunktion stabil läuft
+- [ ] Phase 2 (Home Assistant Smart-Home-Steuerung) - bewusst noch nicht
+      begonnen
