@@ -70,15 +70,34 @@ Kurzfassung: xiaozhi-esp32 klonen, Board-Profil + Server-Adresse
 
 - [x] Server lokal getestet (Docker-Build, Verbindung eines Test-Clients)
 - [x] Firmware geflasht und mit Server verbunden
-- [x] Ende-zu-Ende getestet: Wake-Word ("Hi ESP") → Claude antwortet hörbar
-      auf Deutsch
-- [x] STT auf Groq Whisper umgestellt (bessere Erkennungsqualität als
-      lokales FunASR), TTS: EdgeTTS `de-DE-KatjaNeural`
+- [x] Dauerbetrieb: Server läuft als Home-Assistant-Add-on (siehe oben),
+      Mac-Docker-Compose-Weg nicht mehr nötig
+- [x] Ende-zu-Ende getestet: Claude antwortet hörbar auf Deutsch
+- [x] STT auf Groq Whisper umgestellt, Sprache fest auf Deutsch gesetzt
+      (sonst rät Autodetect bei kurzen Clips gern falsch), TTS: EdgeTTS
+      `de-DE-KatjaNeural`
+- [x] Echtes Tool-Calling für Geräte-Funktionen (Lautstärke/Helligkeit/
+      Theme) - vorher hat Claude sich JSON-Text ausgedacht statt echter
+      Tool-Calls; jetzt über Anthropic-natives Tool-Use + `Intent:
+      function_call` (bewusst ohne hass_*-Plugins, keine HA-Anbindung)
+- [x] Mikrofon-Pegel-Problem gefunden und deutlich verbessert: Hardware-
+      Gain in der Firmware (`es8311_audio_codec.cc`, `input_gain_`
+      30→42) + zusätzliche digitale Audio-Normalisierung vor ASR
+      (`server/overlay/patches/core/providers/asr/openai.py`)
+- [ ] **Bekannte Einschränkung:** Spracherkennung funktioniert zuverlässig,
+      wenn nah + langsam/deutlich gesprochen wird; aus normaler Distanz/
+      Sprechtempo noch nicht robust genug - vermutlich weiterhin
+      Grundrauschen/SNR-Limit des Mikrofons. Nächster Ansatzpunkt:
+      VAD-Empfindlichkeit justieren.
+- [ ] **Bekannte Einschränkung:** Automatisches Weiterhören direkt nach
+      einer Antwort ist unzuverlässig (vermutlich Echo vom eigenen
+      Lautsprecher, Board hat keine Echo-Unterdrückung verdrahtet).
+      Workaround: 1-2 Sekunden warten, bevor man weiterspricht, oder
+      kurz auf das Display tippen. Möglicher Fix: kleine Verzögerung
+      serverseitig einbauen, bevor das Mikrofon nach der Antwort wieder
+      öffnet.
 - [ ] Emotions-Gesicht auf dem Display verifiziert
-- [ ] Dauerbetrieb: Server auf stabilerem Host als dem Mac (Home-Assistant-
-      Add-on, siehe oben)
-- [ ] Wake-Word-Zuverlässigkeit/Mikrofonempfindlichkeit weiter verbessern
-- [ ] Eigenes Gesicht/Persönlichkeit (Nomi-artig) - zurückgestellt, bis
-      Grundfunktion stabil läuft
+- [ ] Eigenes Gesicht/Persönlichkeit im Stil von NIOs "Nomi" - nächster
+      Schritt, sobald obige Einschränkungen weiter verbessert sind
 - [ ] Phase 2 (Home Assistant Smart-Home-Steuerung) - bewusst noch nicht
       begonnen
