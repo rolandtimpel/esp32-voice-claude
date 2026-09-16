@@ -8,6 +8,17 @@ server:
   websocket: ws://${LAN_IP}:${WS_PORT}/xiaozhi/v1/
   vision_explain: http://${LAN_IP}:${HTTP_PORT}/mcp/vision/explain
 
+VAD:
+  SileroVAD:
+    type: silero
+    threshold: 0.5
+    threshold_low: 0.3
+    model_dir: models/snakers4_silero-vad
+    # Standard sind 200ms - schneidet Saetze oft schon bei kurzen
+    # Sprechpausen mitten drin ab. Deutlich hoeher, damit ganze Saetze
+    # statt Bruchstuecke bei der Spracherkennung ankommen.
+    min_silence_duration_ms: 700
+
 selected_module:
   VAD: SileroVAD
   ASR: GroqASR
