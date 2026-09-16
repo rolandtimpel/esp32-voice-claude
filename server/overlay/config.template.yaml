@@ -14,7 +14,15 @@ selected_module:
   LLM: AnthropicLLM
   TTS: EdgeTTS
   Memory: nomem
-  Intent: nointent
+  Intent: function_call
+
+Intent:
+  function_call:
+    type: function_call
+    # Bewusst leer: keine Server-Plugins (kein hass_*, kein web_search, etc.) -
+    # nur die geräte-eigenen MCP-Tools (Lautstärke/Helligkeit/Theme), die
+    # unabhängig davon immer verfügbar sind. Phase 1 bleibt ohne Smart-Home.
+    functions: []
 
 ASR:
   GroqASR:
