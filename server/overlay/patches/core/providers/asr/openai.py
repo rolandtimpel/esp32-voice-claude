@@ -1,5 +1,7 @@
 import time
 import os
+import wave
+import array
 from config.logger import setup_logging
 from typing import Optional, Tuple, List
 from core.providers.asr.dto.dto import InterfaceType
@@ -9,6 +11,37 @@ import requests
 
 TAG = __name__
 logger = setup_logging()
+
+
+def _log_audio_diagnostics(file_path: str):
+    """Debug-Hilfe: Dauer + Pegel der Aufnahme loggen, um Mikrofon-/
+    Verbindungsprobleme von echten ASR-Problemen zu unterscheiden, ohne
+    die Datei vom Geraet holen zu muessen."""
+    try:
+        with wave.open(file_path, "rb") as wf:
+            n_frames = wf.getnframes()
+            framerate = wf.getframerate()
+            sampwidth = wf.getsampwidth()
+            duration_s = n_frames / float(framerate) if framerate else 0
+            raw = wf.readframes(n_frames)
+
+        peak_pct = None
+        rms_pct = None
+        if sampwidth == 2 and raw:
+            samples = array.array("h")
+            samples.frombytes(raw[: len(raw) - (len(raw) % 2)])
+            if samples:
+                peak = max(abs(s) for s in samples)
+                rms = (sum(s * s for s in samples) / len(samples)) ** 0.5
+                peak_pct = round(100 * peak / 32768, 1)
+                rms_pct = round(100 * rms / 32768, 1)
+
+        logger.bind(tag=TAG).info(
+            f"Audio-Diagnose: Dauer={duration_s:.2f}s, "
+            f"Peak={peak_pct}%, RMS(durchschn. Lautstaerke)={rms_pct}%"
+        )
+    except Exception as e:
+        logger.bind(tag=TAG).warning(f"Audio-Diagnose fehlgeschlagen: {e}")
 
 class ASRProvider(ASRProviderBase):
     def __init__(self, config: dict, delete_audio_file: bool):
@@ -36,6 +69,7 @@ class ASRProvider(ASRProviderBase):
             file_path = artifacts.file_path
 
             logger.bind(tag=TAG).info(f"file path: {file_path}")
+            _log_audio_diagnostics(file_path)
             headers = {
                 "Authorization": f"Bearer {self.api_key}",
             }
